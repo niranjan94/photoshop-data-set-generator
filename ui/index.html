@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ID Card Batch File Creator - Anokha 2016</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/snackbar.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <div class="header clearfix">
+        <h3 class="text-muted" style="font-weight: 100">ID Card Batch File Generator</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form action="/add" method="POST" id="add-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Firstname Lastname"
+                           required
+                           title="Name is required">
+                </div>
+
+                <div class="form-group">
+                    <label for="department-type">Select Department Type</label>
+                    <select class="form-control" id="department-type" name="department-type" required="required"
+                            autocomplete="off" data-bv-field="department-type">
+                        <option value="" selected>Select Department Type</option>
+                        <option value="tech-departments">Technical</option>
+                        <option value="nontech-departments">Non Technical</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Select Department</label>
+                    <select class="form-control" id="department" name="department">
+                        <option value="" selected>Select Department Type first</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="designation">Select Designation</label>
+                    <select class="form-control" id="designation" name="designation">
+                        <option value="" selected>Select Designation</option>
+                        <option value="Head">Head</option>
+                        <option value="Co-Head">Co-Head</option>
+                        <option value="Deputy Head">Deputy Head</option>
+                        <option value="Team Leader">Team Leader</option>
+                        <option value="Senior Manager">Senior Manager</option>
+                        <option value="Co-ordinator">Co-ordinator</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Designer">Designer</option>
+                        <option value="Volunteer">Volunteer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo">Choose Photo</label>
+                    <input type="file" id="photo" name="photo" required title="Photo is required" accept="image/*">
+                    <p class="help-block">Select a png or jpg image, less than 1 MB in size</p>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Add Next Person</button>
+                <button type="button" id="next-batch" class="btn btn-success pull-right">Generate Next Batch</button>
+
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <div>
+        <ul id="added-list">
+
+        </ul>
+    </div>
+
+    <footer class="footer">
+        <p class="text-muted">&copy; 2015 Niranjan Rajendran.</p>
+    </footer>
+
+    <div id="tech-departments" class="hidden">
+        <option value="">Select department</option>
+        <option value="Aerospace">Aerospace</option>
+        <option value="Ascom">Ascom</option>
+        <option value="Business">Business</option>
+        <option value="CEN">CEN</option>
+        <option value="Chemical">Chemical</option>
+        <option value="Civil">Civil</option>
+        <option value="Computer Science">CSE</option>
+        <option value="Cyber Security">Cyber Security</option>
+        <option value="ECE/EIE">ECE/EIE</option>
+        <option value="EEE">EEE</option>
+        <option value="English">English</option>
+        <option value="Informals">Informals</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Mechanical">Mechanical</option>
+        <option value="Sciences">Sciences</option>
+        <option value="Social Work">Social Work</option>
+    </div>
+
+    <div id="nontech-departments" class="hidden">
+        <option value="">Select department</option>
+        <option value="Chief Coordinators">Chief Coordinator</option>
+        <option value="Communication">Communication</option>
+        <option value="Corporate Relations">Corporate Relations</option>
+        <option value="Documentation">Documentation</option>
+        <option value="Eventide">Eventide</option>
+        <option value="Exhibitions">Exhibitions</option>
+        <option value="Finance">Finance</option>
+        <option value="Food stalls">Food stalls</option>
+        <option value="Fun Stalls">Fun Stalls</option>
+        <option value="Hospitality">Hospitality</option>
+        <option value="Lumiere">Lumière</option>
+        <option value="Planning & Resources">Planning &amp; Resources</option>
+        <option value="Public Relations">Public Relations</option>
+        <option value="Prize handling">Prize handling</option>
+        <option value="Registration">Registration</option>
+        <option value="Security">Security</option>
+        <option value="Tech Stalls">Tech Stalls</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Web & Multimedia">Web &amp; Multimedia</option>
+    </div>
+
+</div>
+
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.form.js"></script>
+<script src="js/snackbar.js"></script>
+<script src="js/_helpers.js"></script>
+<script src="js/FileSaver.min.js"></script>
+<script src="js/jszip.min.js"></script>
+<script src="js/q.min.js"></script>
+<script src="js/LargeLocalStorage.min.js"></script>
+<script type="text/javascript">
+
+    $("#department-type").change(function () {
+        $("#department").html($("#" + $(this).val()).html());
+    });
+
+    var $addForm = $("#add-form");
+    var $submitBtn = $addForm.find("button[type=submit]");
+    var $photo = $("#photo");
+    var $addedList = $("#added-list");
+    var $nextBatchBtn = $("#next-batch");
+
+    $addForm.ajaxForm({
+        dataType: 'json',
+        beforeSubmit: function () {
+            $submitBtn.disable();
+        },
+        success: function (json) {
+            $submitBtn.enable();
+            if(json.status == "ok") {
+                $addedList.append($("<li>Added " + $addForm.find("input[name=name]").val() + "</li>"));
+                $addForm.find("input[name=name]").val("");
+                $addForm.find("input[name=photo]").val("");
+            } else {
+                createSnackbar("There was an error while adding");
+            }
+        },
+        error: function () {
+            $submitBtn.enable();
+            createSnackbar("There was an error while adding");
+        }
+    });
+
+    $nextBatchBtn.click(function () {
+        $nextBatchBtn.disable();
+        $.ajax({
+            type: "POST",
+            url: "/next-batch",
+            success: function (json) {
+                $nextBatchBtn.enable();
+                if (json.status == "ok") {
+                    createSnackbar("Previous batch generated. Located at " + json.prev_batch);
+                    $addedList.html("");
+                    $addForm.unlockAndResetForm();
+                    $addForm.find("input[name=photo]").val("");
+                    $addForm.find("input").val("");
+                }
+            },
+            error: function () {
+                $nextBatchBtn.enable();
+                createSnackbar("There was an error creating the batch");
+            },
+            dataType: "json"
+        });
+    });
+
+
+</script>
+</body>
+</html>
