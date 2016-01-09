@@ -1,6 +1,6 @@
 ### Steps to use
 
-1. Extract ``IDCardGenerator.zip``.
+1. Extract ``IDCardGenerator_v1_1_alpha.zip``.
 2. Run ``IDCardGenerator.exe``.
 3. Open Google Chrome (recommended) and goto ``http://localhost:8888``
 4. Fill in the details. Attach the photo. And press the ``Add next person`` button. 
