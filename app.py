@@ -43,10 +43,10 @@ def add():
         initialise()
 
     name = HumanName(request.forms.get('name'))
-    first_name = name.first.capitalize()
-    last_name = name.last.capitalize()
-    department = request.forms.get('department').capitalize()
-    designation = request.forms.get('designation').capitalize()
+    first_name = name.first.upper()
+    last_name = name.last.upper()
+    department = request.forms.get('department').upper()
+    designation = request.forms.get('designation').upper()
     photo = request.files.get('photo')
     name, ext = os.path.splitext(photo.filename)
     if ext not in ('.png', '.jpg', '.jpeg', '.JPG', '.JPEG', '.PNG'):
