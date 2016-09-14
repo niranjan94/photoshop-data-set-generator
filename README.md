@@ -1,3 +1,5 @@
+[![StyleCI](https://styleci.io/repos/49312591/shield)](https://styleci.io/repos/49312591)
+
 ### Steps to use
 
 1. Extract ``IDCardGenerator_v1_1_alpha.zip``.
